@@ -1,0 +1,12 @@
+# APIキーなど、秘密の情報が入るファイルはGitHubに公開しない
+.env
+
+# Pythonの自動生成ファイル
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ベクトルデータベース（recipes.jsonから自動生成されるため、
+# GitHubには含めない。使う前に `python vector_store.py` で作り直す）
+data/chroma_db/

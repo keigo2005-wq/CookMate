@@ -1,0 +1,8 @@
+anthropic
+python-dotenv
+streamlit
+sentence-transformers
+chromadb
+supabase
+bcrypt
+truststore

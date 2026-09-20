@@ -1,0 +1,13 @@
+[server]
+# sentence-transformers(埋め込みモデル)が持つ大量の未使用サブモジュールを
+# 自動リロード監視が毎回スキャンしようとして重くなるため、監視を止める。
+# コード変更後は手動でサーバーを再起動する。
+fileWatcherType = "none"
+
+[theme]
+base = "light"
+primaryColor = "#FF6B35"
+backgroundColor = "#FFFDF7"
+secondaryBackgroundColor = "#FFF1E0"
+textColor = "#3A2E2A"
+font = "sans serif"
