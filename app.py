@@ -5,11 +5,13 @@ import streamlit as st
 from auth import log_in, sign_up
 from custom_recipes import add_custom_recipe, delete_custom_recipe, load_custom_recipes
 from favorites import load_favorite_ids, toggle_favorite
+from icons import icon
 from illustrations import ILLUSTRATIONS, get_recipe_illustration
 from llm import generate_answer, generate_weekly_plan
 from meal_plan import DAYS, build_shopping_list, load_plan, set_meal
 from search import (
     calculate_nutrition,
+    classify_nutrition_tags,
     estimate_shopping_cost,
     find_near_miss_recipes,
     load_categorized_ingredient_options,
@@ -20,16 +22,19 @@ from search import (
 
 st.set_page_config(page_title="CookMate", page_icon="assets/icon.png", layout="centered")
 
+# タグごとの配色（背景は淡いトーン、文字はその濃いトーンにする
+# 「トーナルカラー」の考え方。Material Design 3 のchipの配色にならった）
 TAG_COLORS = {
-    "時短": "#FFB84C",
-    "野菜多め": "#7FB77E",
-    "高たんぱく": "#E76F51",
-    "節約": "#4A90A4",
-    "作り置き向き": "#9B7EDE",
-    "定番": "#D4A574",
-    "ダイエット向き": "#5B9279",
-    "美容": "#E0729F",
+    "時短": ("#FFE7C2", "#7A4A00"),
+    "野菜多め": ("#DCEFCE", "#33591C"),
+    "高たんぱく": ("#FFDBC9", "#7A2E0E"),
+    "節約": ("#D3E8EC", "#0B4650"),
+    "作り置き向き": ("#E8DEFA", "#4B2E82"),
+    "定番": ("#F0E4D4", "#5C4630"),
+    "ダイエット向き": ("#D7ECDD", "#1E5631"),
+    "美容": ("#FBDCE6", "#7D2350"),
 }
+DEFAULT_TAG_COLOR = ("#EEE6E0", "#4A3B34")
 
 SORT_OPTIONS = {
     "おすすめ順": None,
@@ -38,88 +43,139 @@ SORT_OPTIONS = {
     "難易度が易しい順": ("difficulty", False),
 }
 
-PFC_COLORS = {"protein": "#E76F51", "fat": "#FFC107", "carbs": "#6FA8DC"}
+PFC_COLORS = {"protein": "#B3401D", "fat": "#B8860B", "carbs": "#3E7CB1"}
 
 PAGE_CSS = """
 <style>
+/* ---- Material Design 3 に沿ったカラートークン ----
+   温かみのあるオレンジを基準に、明るいトーン(コンテナ)と
+   濃いトーン(オンコンテナ)のペアで配色を統一している。 */
+:root {
+    --md-primary: #B3401D;
+    --md-on-primary: #FFFFFF;
+    --md-primary-container: #FFDBC9;
+    --md-on-primary-container: #3A0F00;
+    --md-secondary-container: #F4E0D6;
+    --md-on-secondary-container: #2B1D15;
+    --md-surface: #FFF8F5;
+    --md-surface-container: #FFFFFF;
+    --md-surface-container-high: #FBEEE7;
+    --md-on-surface: #271A13;
+    --md-on-surface-variant: #6B5A50;
+    --md-outline: #85736A;
+    --md-outline-variant: #E4D4C9;
+    --md-elevation-1: 0px 1px 2px rgba(0,0,0,0.20), 0px 1px 3px 1px rgba(60,30,10,0.12);
+    --md-elevation-2: 0px 1px 2px rgba(0,0,0,0.22), 0px 2px 8px 1px rgba(60,30,10,0.16);
+}
+
 /* 画面幅より横に広がってしまう要素があっても、横スクロールが
    出ないようにする保険 */
 body { overflow-x: hidden; }
+body, [class*="st-emotion-cache"] { color: var(--md-on-surface); }
 
 .recipe-card h3 {
     overflow-wrap: break-word;
     word-break: break-word;
 }
 
+.brand-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 2px;
+}
+.brand-row h1 {
+    margin: 0;
+    font-size: 2rem;
+}
 .subtitle {
-    color: #B0754A;
-    font-size: 1em;
-    margin-top: -8px;
+    color: var(--md-on-surface-variant);
+    font-size: 0.95em;
+    margin-top: 0;
     margin-bottom: 14px;
 }
 .hero-strip {
     display: flex;
     gap: 8px;
-    border-radius: 18px;
+    border-radius: 20px;
     overflow: hidden;
     height: 90px;
     margin-bottom: 18px;
+    box-shadow: var(--md-elevation-1);
 }
 .hero-strip > div { flex: 1; min-width: 0; }
 .hero-strip svg { display: block; }
 
 .recipe-card {
-    background: #FFFFFF;
-    border: 1px solid #FFE0B2;
-    border-radius: 16px;
+    background: var(--md-surface-container);
+    border: 1px solid var(--md-outline-variant);
+    border-radius: 20px;
     overflow: hidden;
     margin-bottom: 4px;
-    box-shadow: 0 3px 10px rgba(255, 107, 53, 0.12);
+    box-shadow: var(--md-elevation-1);
 }
 .recipe-card.best {
-    border: 2px solid #FF6B35;
-    box-shadow: 0 4px 16px rgba(255, 107, 53, 0.25);
+    border: 1.5px solid var(--md-primary);
+    box-shadow: var(--md-elevation-2);
 }
 .illustration-banner { height: 110px; }
 .illustration-banner svg { display: block; }
-.card-body { padding: 16px 20px; }
+.card-body { padding: 18px 20px; }
 .best-badge {
-    display: inline-block;
-    background: #FF6B35;
-    color: white;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--md-primary-container);
+    color: var(--md-on-primary-container);
     font-size: 0.78em;
-    padding: 2px 10px;
+    font-weight: 600;
+    padding: 4px 12px;
     border-radius: 999px;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 .recipe-card h3 { margin: 0 0 8px 0; }
 .recipe-meta {
-    color: #7A6A63;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    color: var(--md-on-surface-variant);
     font-size: 0.9em;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
+.recipe-meta .meta-item { display: inline-flex; align-items: center; gap: 4px; }
 .tag-chip {
-    display: inline-block;
-    padding: 2px 10px;
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 12px;
     border-radius: 999px;
-    color: white;
     font-size: 0.78em;
+    font-weight: 500;
     margin-right: 6px;
     margin-bottom: 4px;
 }
-.ingredient-ok { color: #2E7D32; }
-.ingredient-need { color: #C1440E; }
+.ingredient-ok, .ingredient-need {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+}
+.ingredient-ok { color: #2E6B2E; }
+.ingredient-need { color: #A03E1A; }
+.ingredient-ok svg, .ingredient-need svg { margin-top: 3px; flex-shrink: 0; }
 
 .nutrition-row {
     display: flex;
     align-items: center;
     gap: 14px;
-    margin: 8px 0;
+    margin: 10px 0;
+    padding: 12px 14px;
+    background: var(--md-surface-container-high);
+    border-radius: 14px;
 }
 .nutrition-text {
     flex: 1;
     min-width: 0;
-    color: #4A3B34;
+    color: var(--md-on-surface);
     font-size: 0.88em;
 }
 .pfc-pie {
@@ -127,12 +183,12 @@ body { overflow-x: hidden; }
     height: 52px;
     min-width: 52px;
     border-radius: 50%;
-    border: 2px solid #FFFFFF;
-    box-shadow: 0 0 0 1px #F0DCC8;
+    border: 2px solid var(--md-surface-container);
+    box-shadow: 0 0 0 1px var(--md-outline-variant);
 }
 .pfc-legend {
     font-size: 0.78em;
-    color: #7A6A63;
+    color: var(--md-on-surface-variant);
     margin-top: 4px;
     line-height: 1.6;
 }
@@ -143,54 +199,96 @@ body { overflow-x: hidden; }
     border-radius: 50%;
     margin-right: 4px;
 }
+.vitamin-line {
+    font-size: 0.76em;
+    color: var(--md-on-surface-variant);
+    margin-top: 6px;
+}
 
 .near-miss-card {
-    background: #FFF6EE;
-    border: 2px dashed #FF6B35;
-    border-radius: 16px;
+    background: var(--md-surface-container);
+    border: 1.5px dashed var(--md-outline);
+    border-radius: 20px;
     overflow: hidden;
     margin-bottom: 16px;
 }
 .near-miss-card .illustration-banner { height: 80px; opacity: 0.9; }
 .cost-badge {
-    display: inline-block;
-    background: #FF6B35;
-    color: white;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--md-primary);
+    color: var(--md-on-primary);
     border-radius: 999px;
-    padding: 2px 12px;
+    padding: 3px 12px;
     font-size: 0.85em;
     margin-left: 8px;
 }
 
 .ai-comment {
-    background: #FFF8F0;
-    border-left: 4px solid #FFB84C;
-    border-radius: 8px;
-    padding: 12px 16px;
+    display: flex;
+    gap: 10px;
+    background: var(--md-secondary-container);
+    border-radius: 14px;
+    padding: 14px 16px;
     margin-bottom: 20px;
     font-size: 0.95em;
-    color: #4A3B34;
+    color: var(--md-on-secondary-container);
 }
+.ai-comment svg { flex-shrink: 0; margin-top: 2px; }
 
 .fav-button-row {
     margin-bottom: 20px;
     margin-top: -8px;
 }
 
-/* ボタン・タブを指で押しやすい大きさにする（44pxはスマホの
-   タップ領域として推奨されている目安の大きさ） */
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--md-on-surface);
+}
+
+/* ---- Streamlit標準ウィジェットを、Material Design 3ふうに整える ---- */
 .stButton button, .stFormSubmitButton button {
     min-height: 44px;
-    padding: 10px 18px;
+    padding: 10px 20px;
     font-size: 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--md-outline-variant);
+    box-shadow: none;
+    transition: box-shadow 0.15s ease;
+}
+.stButton button:hover, .stFormSubmitButton button:hover {
+    box-shadow: var(--md-elevation-1);
+    border-color: var(--md-primary);
+}
+.stButton button[kind="primary"], .stFormSubmitButton button[kind="primary"] {
+    border: none;
+    box-shadow: var(--md-elevation-1);
 }
 .stTabs [data-baseweb="tab"] {
     min-height: 44px;
     padding: 10px 14px;
+    border-radius: 12px 12px 0 0;
 }
 .stSelectbox div[data-baseweb="select"] > div,
 .stMultiSelect div[data-baseweb="select"] > div {
     min-height: 44px;
+    border-radius: 14px;
+}
+.stTextInput input, .stTextArea textarea, .stNumberInput input {
+    border-radius: 14px;
+}
+[data-testid="stExpander"] {
+    border-radius: 16px;
+    border: 1px solid var(--md-outline-variant);
+    overflow: hidden;
+}
+[data-testid="stForm"] {
+    border-radius: 20px;
+    border: 1px solid var(--md-outline-variant);
+    box-shadow: var(--md-elevation-1);
 }
 
 /* スマホなど幅の狭い画面では、文字が小さくなりすぎないよう
@@ -212,7 +310,10 @@ body { overflow-x: hidden; }
 
 st.markdown(PAGE_CSS, unsafe_allow_html=True)
 
-st.title("🍳 CookMate")
+st.markdown(
+    f'<div class="brand-row">{icon("chef-hat", size=34, color="var(--md-primary)")}<h1>CookMate</h1></div>',
+    unsafe_allow_html=True,
+)
 st.markdown('<p class="subtitle">〜 あなたの冷蔵庫の、料理の相棒 〜</p>', unsafe_allow_html=True)
 
 hero_keys = ["meat", "salad", "soup", "rice"]
@@ -224,13 +325,13 @@ st.markdown(hero_html, unsafe_allow_html=True)
 if "user" not in st.session_state:
     st.write("ログインすると、あなた専用のお気に入り・週間献立・マイレシピが使えます。")
 
-    login_tab, signup_tab = st.tabs(["ログイン", "新規登録"])
+    login_tab, signup_tab = st.tabs([":material/login: ログイン", ":material/person_add: 新規登録"])
 
     with login_tab:
         with st.form("login_form"):
             login_username = st.text_input("ニックネーム", key="login_username")
             login_password = st.text_input("パスワード", type="password", key="login_password")
-            login_submitted = st.form_submit_button("ログイン")
+            login_submitted = st.form_submit_button(":material/login: ログイン")
         if login_submitted:
             if not login_username.strip() or not login_password:
                 st.error("ニックネームとパスワードを入力してください。")
@@ -249,7 +350,7 @@ if "user" not in st.session_state:
             signup_password2 = st.text_input(
                 "パスワード（確認）", type="password", key="signup_password2"
             )
-            signup_submitted = st.form_submit_button("新規登録")
+            signup_submitted = st.form_submit_button(":material/person_add: 新規登録")
         if signup_submitted:
             if not signup_username.strip() or not signup_password:
                 st.error("ニックネームとパスワードを入力してください。")
@@ -272,8 +373,8 @@ current_user = st.session_state["user"]
 user_id = current_user["id"]
 
 with st.sidebar:
-    st.write(f"👤 {current_user['username']} さん")
-    if st.button("ログアウト"):
+    st.write(f":material/person: {current_user['username']} さん")
+    if st.button(":material/logout: ログアウト"):
         del st.session_state["user"]
         st.rerun()
 
@@ -293,7 +394,7 @@ def format_ingredient_list(recipe: dict, names: list[str]) -> str:
 def render_favorite_button(recipe_id: str, key_prefix: str) -> None:
     """お気に入りの追加・解除ボタンを表示する。"""
     is_fav = recipe_id in load_favorite_ids(user_id)
-    label = "💔 お気に入りから外す" if is_fav else "🤍 お気に入りに追加"
+    label = ":material/heart_minus: お気に入りから外す" if is_fav else ":material/favorite: お気に入りに追加"
     st.markdown('<div class="fav-button-row"></div>', unsafe_allow_html=True)
     if st.button(label, key=f"fav_{key_prefix}_{recipe_id}"):
         toggle_favorite(user_id, recipe_id)
@@ -325,11 +426,21 @@ def build_nutrition_html(recipe: dict) -> str:
         f"</div>"
     )
 
+    vitamin_line = (
+        f'<div class="vitamin-line">'
+        f'ビタミンC {n.get("vitamin_c", 0):.0f}mg／'
+        f'ビタミンE {n.get("vitamin_e", 0):.1f}mg／'
+        f'カルシウム {n.get("calcium", 0):.0f}mg／'
+        f'鉄 {n.get("iron", 0):.1f}mg'
+        f"</div>"
+    )
+
     return (
         f'<div class="nutrition-row">'
-        f'<div class="nutrition-text">🔥 目安 約{n["kcal"]:.0f}kcal　'
+        f'<div class="nutrition-text">{icon("flame", size=16, color=PFC_COLORS["fat"])} 目安 約{n["kcal"]:.0f}kcal　'
         f'（P {n["protein"]:.0f}g ／ F {n["fat"]:.0f}g ／ C {n["carbs"]:.0f}g）'
         f"{legend}"
+        f"{vitamin_line}"
         f"</div>"
         f'<div class="pfc-pie" style="{pie_style}"></div>'
         f"</div>"
@@ -346,7 +457,8 @@ def render_recipe_card(
     """レシピカードを表示する。have/missing が None のときは、食材の一致状況を表示しない。"""
     stars = "★" * recipe["difficulty"] + "☆" * (3 - recipe["difficulty"])
     tag_chips = "".join(
-        f'<span class="tag-chip" style="background:{TAG_COLORS.get(t, "#B0A8A0")}">{t}</span>'
+        f'<span class="tag-chip" style="background:{TAG_COLORS.get(t, DEFAULT_TAG_COLOR)[0]};'
+        f'color:{TAG_COLORS.get(t, DEFAULT_TAG_COLOR)[1]}">{t}</span>'
         for t in recipe["tags"]
     )
 
@@ -354,25 +466,33 @@ def render_recipe_card(
     if have is not None:
         have_text = format_ingredient_list(recipe, have) if have else "なし"
         if missing:
-            cost = estimate_shopping_cost(missing)
+            missing_dicts = [i for i in recipe["ingredients"] if i["name"] in missing]
+            cost = estimate_shopping_cost(missing_dicts)
             missing_text = f"{format_ingredient_list(recipe, missing)}（合計 約{cost}円）"
         else:
             missing_text = "なし(今の食材だけで作れます)"
+        ok_icon = icon("check-circle-2", size=16, color="#2E6B2E")
+        need_icon = icon("shopping-cart", size=16, color="#A03E1A")
         ingredient_lines = (
-            f'<p class="ingredient-ok">✅ 使える食材: {have_text}</p>'
-            f'<p class="ingredient-need">🛒 追加で必要: {missing_text}</p>'
+            f'<p class="ingredient-ok">{ok_icon} 使える食材: {have_text}</p>'
+            f'<p class="ingredient-need">{need_icon} 追加で必要: {missing_text}</p>'
         )
 
     card_class = "recipe-card best" if is_best else "recipe-card"
-    best_badge = '<span class="best-badge">⭐ 一番のおすすめ</span>' if is_best else ""
+    best_badge = (
+        f'<span class="best-badge">{icon("star", size=14)} 一番のおすすめ</span>' if is_best else ""
+    )
 
     card_html = (
         f'<div class="{card_class}">'
         f'<div class="illustration-banner">{get_recipe_illustration(recipe)}</div>'
         f'<div class="card-body">{best_badge}'
         f'<h3>{recipe["title"]}</h3>'
-        f'<div class="recipe-meta">⏱ {recipe["time_minutes"]}分　'
-        f'難易度: {stars}　💴 目安 約{recipe["price_yen"]}円</div>'
+        f'<div class="recipe-meta">'
+        f'<span class="meta-item">{icon("clock", size=15)} {recipe["time_minutes"]}分</span>'
+        f'<span class="meta-item">難易度: {stars}</span>'
+        f'<span class="meta-item">{icon("japanese_yen", size=15)} 目安 約{recipe["price_yen"]}円</span>'
+        f'</div>'
         f'<div>{tag_chips}</div>'
         f"{build_nutrition_html(recipe)}"
         f"{ingredient_lines}"
@@ -381,11 +501,11 @@ def render_recipe_card(
     st.markdown(card_html, unsafe_allow_html=True)
     render_favorite_button(recipe["id"], key_prefix)
 
-    with st.expander("📖 作り方を見る"):
+    with st.expander(":material/menu_book: 作り方を見る"):
         for n, step in enumerate(recipe["steps"], start=1):
             st.write(f"{n}. {step}")
         if recipe.get("arrange_tip"):
-            st.info(f"💡 アレンジ: {recipe['arrange_tip']}")
+            st.info(f"アレンジ: {recipe['arrange_tip']}", icon=":material/lightbulb:")
         st.caption(f"栄養の特徴: {recipe['nutrition_note']}")
         st.caption(f"保存: {recipe['storage']} / 出典: {recipe['source']}")
 
@@ -399,8 +519,11 @@ def render_near_miss_card(recipe: dict, missing: list[str], cost: int) -> None:
         f'<div class="illustration-banner">{get_recipe_illustration(recipe)}</div>'
         f'<div class="card-body">'
         f'<h3>{recipe["title"]} <span class="cost-badge">あと約{cost}円</span></h3>'
-        f'<div class="recipe-meta">⏱ {recipe["time_minutes"]}分　難易度: {stars}</div>'
-        f'<p>🛒 買い足す食材: {missing_text}</p>'
+        f'<div class="recipe-meta">'
+        f'<span class="meta-item">{icon("clock", size=15)} {recipe["time_minutes"]}分</span>'
+        f'<span class="meta-item">難易度: {stars}</span>'
+        f'</div>'
+        f'<p>{icon("shopping-cart", size=16, color="#A03E1A")} 買い足す食材: {missing_text}</p>'
         f'</div></div>'
     )
     st.markdown(card_html, unsafe_allow_html=True)
@@ -409,10 +532,10 @@ def render_near_miss_card(recipe: dict, missing: list[str], cost: int) -> None:
 
 tab_search, tab_favorites, tab_planner, tab_myrecipes = st.tabs(
     [
-        "🔍 レシピを探す",
-        f"❤️ お気に入り（{len(load_favorite_ids(user_id))}件）",
-        "📅 週間献立",
-        f"📝 マイレシピ（{len(load_custom_recipes(user_id))}件）",
+        ":material/search: レシピを探す",
+        f":material/favorite: お気に入り（{len(load_favorite_ids(user_id))}件）",
+        ":material/calendar_month: 週間献立",
+        f":material/edit_note: マイレシピ（{len(load_custom_recipes(user_id))}件）",
     ]
 )
 
@@ -431,7 +554,7 @@ with tab_search:
         st.session_state.pop("tags_select", None)
         st.session_state.pop("ai_comment", None)
 
-    st.button("🔄 条件をリセット", on_click=reset_search_filters)
+    st.button(":material/restart_alt: 条件をリセット", on_click=reset_search_filters)
 
     st.write("**使いたい食材**（カテゴリごとに選べます）")
     ingredients: list[str] = []
@@ -500,7 +623,8 @@ with tab_search:
             near_miss_info = []
             for r in near_miss_recipes:
                 _have, missing = match_ingredients(r, ingredients)
-                cost = estimate_shopping_cost(missing)
+                missing_dicts = [i for i in r["ingredients"] if i["name"] in missing]
+                cost = estimate_shopping_cost(missing_dicts)
                 near_miss_info.append((r, missing, cost))
 
             best_id = results[0]["id"]
@@ -519,7 +643,7 @@ with tab_search:
                 render_recipe_card(r, have, missing, is_best=(r["id"] == best_id), key_prefix="result")
 
             if near_miss_info:
-                st.subheader("🛒 あと少しで作れるレシピ")
+                st.subheader(":material/shopping_cart: あと少しで作れるレシピ")
                 for r, missing, cost in near_miss_info:
                     render_near_miss_card(r, missing, cost)
 
@@ -536,7 +660,7 @@ with tab_search:
                 tuple(r["id"] for r in results_to_show),
             )
 
-            if st.button("🤖 AIのおすすめコメントをもらう"):
+            if st.button(":material/auto_awesome: AIのおすすめコメントをもらう"):
                 query_desc = (
                     f"手持ちの食材: {'、'.join(ingredients) or 'なし'} / "
                     f"食べたいものの説明: {query_text.strip() or 'なし'} / "
@@ -553,7 +677,8 @@ with tab_search:
             stored_comment = st.session_state.get("ai_comment")
             if stored_comment and stored_comment["fingerprint"] == current_fingerprint:
                 st.markdown(
-                    f'<div class="ai-comment">🤖 {stored_comment["answer"]}</div>',
+                    f'<div class="ai-comment">{icon("sparkles", size=18)}'
+                    f'<span>{stored_comment["answer"]}</span></div>',
                     unsafe_allow_html=True,
                 )
             elif stored_comment:
@@ -562,7 +687,10 @@ with tab_search:
 with tab_favorites:
     favorite_ids = load_favorite_ids(user_id)
     if not favorite_ids:
-        st.info("まだお気に入りがありません。「🔍 レシピを探す」タブでカードの🤍ボタンから追加できます。")
+        st.info(
+            "まだお気に入りがありません。「レシピを探す」タブでカードのボタンから追加できます。",
+            icon=":material/favorite:",
+        )
     else:
         favorite_recipes = [recipes_by_id[fid] for fid in favorite_ids if fid in recipes_by_id]
         st.write(f"{len(favorite_recipes)}件のお気に入りレシピです。")
@@ -572,7 +700,7 @@ with tab_favorites:
 with tab_planner:
     st.write("曜日ごとにレシピを割り当てると、1週間分の献立と買い物リストが作れます。")
 
-    st.markdown("**🤖 栄養バランスの組み方が分からない場合は、AIにおまかせできます**")
+    st.markdown("**:material/auto_awesome: 栄養バランスの組み方が分からない場合は、AIにおまかせできます**")
 
     goal_presets = st.multiselect(
         "今週の目標（選ぶだけでもOK・複数選択可）",
@@ -586,7 +714,7 @@ with tab_planner:
     )
     user_goal = "、".join(goal_presets + ([goal_text.strip()] if goal_text.strip() else []))
 
-    if st.button("🤖 AIに1週間分の献立を設計してもらう"):
+    if st.button(":material/auto_awesome: AIに1週間分の献立を設計してもらう"):
         with st.spinner("AIが栄養バランスを考えながら、1週間分の献立を設計しています..."):
             try:
                 plan_result = generate_weekly_plan(all_recipes, user_goal=user_goal or None)
@@ -619,7 +747,7 @@ with tab_planner:
                 st.rerun()
 
     if st.session_state.get("weekly_plan_reasoning"):
-        st.info(f"🤖 {st.session_state['weekly_plan_reasoning']}")
+        st.info(st.session_state["weekly_plan_reasoning"], icon=":material/auto_awesome:")
 
     st.divider()
 
@@ -637,7 +765,7 @@ with tab_planner:
         st.session_state.pop("goal_presets_select", None)
         st.session_state.pop("goal_text_input", None)
 
-    st.button("🔄 献立をすべて未定に戻す", on_click=reset_weekly_plan)
+    st.button(":material/restart_alt: 献立をすべて未定に戻す", on_click=reset_weekly_plan)
 
     plan = load_plan(user_id)
 
@@ -667,7 +795,7 @@ with tab_planner:
     if not assigned_recipes:
         st.info("レシピを割り当てると、ここに献立の詳細と買い物リストが表示されます。")
     else:
-        st.subheader("📋 献立の詳細")
+        st.subheader(":material/checklist: 献立の詳細")
         for day in DAYS:
             rid = plan.get(day)
             if rid in recipes_by_id:
@@ -676,9 +804,14 @@ with tab_planner:
                     recipes_by_id[rid], have=None, missing=None, is_best=False, key_prefix=f"planner_{day}"
                 )
 
-        st.subheader("🛒 今週の買い物リスト")
+        st.subheader(":material/shopping_cart: 今週の買い物リスト")
         shopping_list = build_shopping_list(plan, recipes_by_id)
-        total_cost = estimate_shopping_cost([item["name"] for item in shopping_list])
+        flattened_amounts = [
+            {"name": item["name"], "amount": amount}
+            for item in shopping_list
+            for amount in item["amounts"]
+        ]
+        total_cost = estimate_shopping_cost(flattened_amounts)
         total_kcal = sum(calculate_nutrition(r)["kcal"] for r in assigned_recipes)
 
         st.write(
@@ -736,7 +869,7 @@ with tab_myrecipes:
             "栄養の特徴（任意）", placeholder="例：高たんぱくで野菜も摂れる一品"
         )
 
-        submitted_recipe = st.form_submit_button("➕ レシピを登録する")
+        submitted_recipe = st.form_submit_button(":material/add: レシピを登録する")
 
     if submitted_recipe:
         errors = []
@@ -764,18 +897,20 @@ with tab_myrecipes:
             for e in errors:
                 st.error(e)
         else:
+            auto_nutrition_tags = classify_nutrition_tags(
+                calculate_nutrition({"ingredients": parsed_ingredients})
+            )
+            combined_tags = custom_tags + [t for t in auto_nutrition_tags if t not in custom_tags]
             new_recipe = {
                 "title": title.strip(),
                 "servings": "1人分",
                 "time_minutes": int(time_minutes),
                 "category": category,
-                "tags": custom_tags,
+                "tags": combined_tags,
                 "ingredients": parsed_ingredients,
                 "steps": parsed_steps,
                 "nutrition_note": nutrition_note.strip() or "ユーザーが登録したオリジナルレシピです。",
-                "price_yen": int(price_yen) if price_yen else estimate_shopping_cost(
-                    [i["name"] for i in parsed_ingredients]
-                ),
+                "price_yen": int(price_yen) if price_yen else estimate_shopping_cost(parsed_ingredients),
                 "difficulty": int(difficulty),
                 "storage": storage.strip() or "お早めにお召し上がりください",
                 "source": "マイレシピ（自分で登録）",
@@ -799,10 +934,10 @@ with tab_myrecipes:
     custom_recipes = load_custom_recipes(user_id)
     if custom_recipes:
         st.divider()
-        st.subheader(f"📝 マイレシピ一覧（{len(custom_recipes)}件）")
+        st.subheader(f":material/edit_note: マイレシピ一覧（{len(custom_recipes)}件）")
         for r in custom_recipes:
             render_recipe_card(r, have=None, missing=None, is_best=False, key_prefix="myrecipe")
-            if st.button(f"🗑 「{r['title']}」を削除する", key=f"delete_{r['id']}"):
+            if st.button(f":material/delete: 「{r['title']}」を削除する", key=f"delete_{r['id']}"):
                 delete_custom_recipe(user_id, r["id"])
                 try:
                     from vector_store import delete_recipe_from_index

@@ -1,0 +1,656 @@
+{
+  "鶏むね肉": {
+    "per_100g": {"kcal": 105, "protein": 23.3, "fat": 1.9, "carbs": 0.1, "vitamin_c": 3, "vitamin_e": 0.3, "calcium": 4, "iron": 0.3},
+    "price_per_100g_yen": 75,
+    "unit_weights_g": {},
+    "note": "MEXT 若鶏肉むね/皮なし/生"
+  },
+  "キャベツ": {
+    "per_100g": {"kcal": 21, "protein": 1.3, "fat": 0.2, "carbs": 5.2, "vitamin_c": 41, "vitamin_e": 0.1, "calcium": 43, "iron": 0.3},
+    "price_per_100g_yen": 35,
+    "unit_weights_g": {"個": 1200, "枚": 50},
+    "note": "MEXT キャベツ/結球葉/生"
+  },
+  "塩": {
+    "per_100g": {"kcal": 0, "protein": 0.0, "fat": 0.0, "carbs": 0.0, "vitamin_c": 0, "vitamin_e": 0.0, "calcium": 22, "iron": 0.0},
+    "price_per_100g_yen": 20,
+    "unit_weights_g": {},
+    "note": "MEXT 食塩"
+  },
+  "ごま油": {
+    "per_100g": {"kcal": 921, "protein": 0.0, "fat": 100.0, "carbs": 0.0, "vitamin_c": 0, "vitamin_e": 1.5, "calcium": 1, "iron": 0.5},
+    "price_per_100g_yen": 280,
+    "unit_weights_g": {},
+    "note": "MEXT ごま油。価格は130g小瓶の実勢価格より per100g換算"
+  },
+  "卵": {
+    "per_100g": {"kcal": 142, "protein": 12.2, "fat": 10.2, "carbs": 0.4, "vitamin_c": 0, "vitamin_e": 1.3, "calcium": 51, "iron": 1.8},
+    "price_per_100g_yen": 40,
+    "unit_weights_g": {"個": 50},
+    "note": "MEXT 鶏卵/全卵/生"
+  },
+  "鶏がらスープの素": {
+    "per_100g": {"kcal": 223, "protein": 11.6, "fat": 1.4, "carbs": 41.7, "vitamin_c": 0, "vitamin_e": 0.1, "calcium": 80, "iron": 0.7},
+    "price_per_100g_yen": 450,
+    "unit_weights_g": {},
+    "note": "MEXT 顆粒中華だし相当。家庭用小瓶の実勢価格よりper100g換算"
+  },
+  "水": {
+    "per_100g": {"kcal": 0, "protein": 0.0, "fat": 0.0, "carbs": 0.0, "vitamin_c": 0, "vitamin_e": 0.0, "calcium": 0, "iron": 0.0},
+    "price_per_100g_yen": 0,
+    "unit_weights_g": {},
+    "note": "水道水。栄養・価格ともに0とする"
+  },
+  "豚こま肉": {
+    "per_100g": {"kcal": 230, "protein": 18.4, "fat": 17.9, "carbs": 0.1, "vitamin_c": 1, "vitamin_e": 0.3, "calcium": 4, "iron": 0.6},
+    "price_per_100g_yen": 158,
+    "unit_weights_g": {},
+    "note": "豚こま切れ肉(赤肉+脂身混合)の一般的栄養成分値。価格はスーパー相場(100〜180円/100g)の中間値"
+  },
+  "味噌": {
+    "per_100g": {"kcal": 192, "protein": 12.5, "fat": 6.0, "carbs": 21.9, "vitamin_c": 0, "vitamin_e": 0.5, "calcium": 100, "iron": 4.0},
+    "price_per_100g_yen": 45,
+    "unit_weights_g": {"tablespoon_g": 18, "teaspoon_g": 6},
+    "note": "MEXT 米みそ/淡色辛みそ"
+  },
+  "みりん": {
+    "per_100g": {"kcal": 241, "protein": 0.2, "fat": 0.0, "carbs": 43.2, "vitamin_c": 0, "vitamin_e": 0.0, "calcium": 2, "iron": 0.1},
+    "price_per_100g_yen": 70,
+    "unit_weights_g": {},
+    "note": "MEXT 本みりん"
+  },
+  "サラダ油": {
+    "per_100g": {"kcal": 921, "protein": 0.0, "fat": 100.0, "carbs": 0.0, "vitamin_c": 0, "vitamin_e": 13.0, "calcium": 0, "iron": 0.0},
+    "price_per_100g_yen": 30,
+    "unit_weights_g": {},
+    "note": "MEXT なたね油/調合油"
+  },
+  "鶏もも肉": {
+    "per_100g": {"kcal": 190, "protein": 16.6, "fat": 14.2, "carbs": 0.0, "vitamin_c": 3, "vitamin_e": 0.7, "calcium": 5, "iron": 0.6},
+    "price_per_100g_yen": 130,
+    "unit_weights_g": {},
+    "note": "MEXT 若鶏肉もも/皮つき/生"
+  },
+  "玉ねぎ": {
+    "per_100g": {"kcal": 34, "protein": 1.0, "fat": 0.1, "carbs": 8.8, "vitamin_c": 7, "vitamin_e": 0.1, "calcium": 17, "iron": 0.2},
+    "price_per_100g_yen": 33,
+    "unit_weights_g": {"個": 200},
+    "note": "MEXT たまねぎ/りん茎/生"
+  },
+  "醤油": {
+    "per_100g": {"kcal": 76, "protein": 7.7, "fat": 0.0, "carbs": 7.9, "vitamin_c": 0, "vitamin_e": 0.0, "calcium": 29, "iron": 1.7},
+    "price_per_100g_yen": 30,
+    "unit_weights_g": {},
+    "note": "MEXT こいくちしょうゆ"
+  },
+  "砂糖": {
+    "per_100g": {"kcal": 391, "protein": 0.0, "fat": 0.0, "carbs": 99.3, "vitamin_c": 0, "vitamin_e": 0.0, "calcium": 1, "iron": 0.0},
+    "price_per_100g_yen": 25,
+    "unit_weights_g": {"tablespoon_g": 9, "teaspoon_g": 3},
+    "note": "MEXT 上白糖。粉末のため大さじ/小さじは液体より軽い"
+  },
+  "ツナ缶": {
+    "per_100g": {"kcal": 265, "protein": 17.7, "fat": 21.7, "carbs": 0.1, "vitamin_c": 0, "vitamin_e": 7.2, "calcium": 4, "iron": 0.5},
+    "price_per_100g_yen": 160,
+    "unit_weights_g": {"缶": 70},
+    "note": "MEXT まぐろ/缶詰/油漬/フレーク/ライト"
+  },
+  "もやし": {
+    "per_100g": {"kcal": 14, "protein": 1.7, "fat": 0.1, "carbs": 2.6, "vitamin_c": 8, "vitamin_e": 0.1, "calcium": 10, "iron": 0.3},
+    "price_per_100g_yen": 20,
+    "unit_weights_g": {"袋": 200},
+    "note": "MEXT りょくとうもやし/生"
+  },
+  "絹ごし豆腐": {
+    "per_100g": {"kcal": 56, "protein": 4.9, "fat": 3.0, "carbs": 2.0, "vitamin_c": 0, "vitamin_e": 0.1, "calcium": 57, "iron": 0.8},
+    "price_per_100g_yen": 35,
+    "unit_weights_g": {"丁": 300},
+    "note": "MEXT 絹ごし豆腐"
+  },
+  "乾燥わかめ": {
+    "per_100g": {"kcal": 138, "protein": 16.3, "fat": 1.6, "carbs": 34.5, "vitamin_c": 0, "vitamin_e": 1.0, "calcium": 870, "iron": 6.1},
+    "price_per_100g_yen": 1000,
+    "unit_weights_g": {},
+    "note": "MEXT カットわかめ/乾。少量使用のため高単価だが影響は小さい"
+  },
+  "合いびき肉": {
+    "per_100g": {"kcal": 227, "protein": 17.5, "fat": 17.2, "carbs": 0.4, "vitamin_c": 1, "vitamin_e": 0.4, "calcium": 6, "iron": 1.6},
+    "price_per_100g_yen": 120,
+    "unit_weights_g": {},
+    "note": "牛ひき肉と豚ひき肉(MEXT値)の平均で近似"
+  },
+  "ご飯": {
+    "per_100g": {"kcal": 156, "protein": 2.5, "fat": 0.3, "carbs": 37.1, "vitamin_c": 0, "vitamin_e": 0.0, "calcium": 3, "iron": 0.1},
+    "price_per_100g_yen": 30,
+    "unit_weights_g": {"杯分": 150},
+    "note": "MEXT 水稲めし/精白米"
+  },
+  "ほうれん草": {
+    "per_100g": {"kcal": 20, "protein": 2.2, "fat": 0.4, "carbs": 3.1, "vitamin_c": 35, "vitamin_e": 2.1, "calcium": 49, "iron": 2.0},
+    "price_per_100g_yen": 90,
+    "unit_weights_g": {"束": 200},
+    "note": "MEXT ほうれんそう/葉/通年平均/生"
+  },
+  "ピーマン": {
+    "per_100g": {"kcal": 20, "protein": 0.9, "fat": 0.2, "carbs": 5.1, "vitamin_c": 76, "vitamin_e": 0.8, "calcium": 11, "iron": 0.4},
+    "price_per_100g_yen": 60,
+    "unit_weights_g": {"個": 35},
+    "note": "MEXT青ピーマン/果実/生"
+  },
+  "ケチャップ": {
+    "per_100g": {"kcal": 106, "protein": 1.6, "fat": 0.2, "carbs": 25.4, "vitamin_c": 8, "vitamin_e": 2.0, "calcium": 16, "iron": 0.5},
+    "price_per_100g_yen": 60,
+    "unit_weights_g": {},
+    "note": "MEXT トマトケチャップ"
+  },
+  "じゃがいも": {
+    "per_100g": {"kcal": 59, "protein": 1.8, "fat": 0.1, "carbs": 17.6, "vitamin_c": 28, "vitamin_e": 0.1, "calcium": 4, "iron": 0.4},
+    "price_per_100g_yen": 35,
+    "unit_weights_g": {"個": 150},
+    "note": "MEXT じゃがいも/塊茎/皮なし/生"
+  },
+  "にんじん": {
+    "per_100g": {"kcal": 39, "protein": 0.7, "fat": 0.2, "carbs": 9.3, "vitamin_c": 6, "vitamin_e": 0.5, "calcium": 28, "iron": 0.2},
+    "price_per_100g_yen": 35,
+    "unit_weights_g": {"本": 150},
+    "note": "MEXT にんじん/根/皮つき/生"
+  },
+  "バター": {
+    "per_100g": {"kcal": 700, "protein": 0.6, "fat": 81.0, "carbs": 0.2, "vitamin_c": 0, "vitamin_e": 1.5, "calcium": 15, "iron": 0.1},
+    "price_per_100g_yen": 240,
+    "unit_weights_g": {},
+    "note": "MEXT 有塩バター"
+  },
+  "さば缶（味噌煮）": {
+    "per_100g": {"kcal": 217, "protein": 16.3, "fat": 13.9, "carbs": 6.6, "vitamin_c": 0, "vitamin_e": 2.9, "calcium": 210, "iron": 1.6},
+    "price_per_100g_yen": 120,
+    "unit_weights_g": {"缶": 190},
+    "note": "MEXT さば類/缶詰/みそ煮 に近い一般的な栄養成分表示値を採用"
+  },
+  "大根": {
+    "per_100g": {"kcal": 18, "protein": 0.5, "fat": 0.1, "carbs": 4.1, "vitamin_c": 12, "vitamin_e": 0.0, "calcium": 24, "iron": 0.2},
+    "price_per_100g_yen": 25,
+    "unit_weights_g": {"cm": 30},
+    "note": "MEXT だいこん/根/皮なし/生。1cmあたり重量は太さ平均から推定"
+  },
+  "しめじ": {
+    "per_100g": {"kcal": 22, "protein": 2.7, "fat": 0.5, "carbs": 4.8, "vitamin_c": 0, "vitamin_e": 0.0, "calcium": 1, "iron": 0.5},
+    "price_per_100g_yen": 65,
+    "unit_weights_g": {"パック": 100},
+    "note": "MEXT ぶなしめじ/生"
+  },
+  "豚バラ肉": {
+    "per_100g": {"kcal": 366, "protein": 14.2, "fat": 35.4, "carbs": 0.1, "vitamin_c": 1, "vitamin_e": 0.5, "calcium": 3, "iron": 0.6},
+    "price_per_100g_yen": 168,
+    "unit_weights_g": {},
+    "note": "MEXT 豚/ばら/脂身つき/生"
+  },
+  "なす": {
+    "per_100g": {"kcal": 22, "protein": 1.1, "fat": 0.1, "carbs": 5.1, "vitamin_c": 4, "vitamin_e": 0.3, "calcium": 18, "iron": 0.3},
+    "price_per_100g_yen": 50,
+    "unit_weights_g": {"本": 80},
+    "note": "MEXT なす/果実/生"
+  },
+  "厚揚げ": {
+    "per_100g": {"kcal": 143, "protein": 10.7, "fat": 11.3, "carbs": 0.9, "vitamin_c": 0, "vitamin_e": 0.8, "calcium": 240, "iron": 2.6},
+    "price_per_100g_yen": 60,
+    "unit_weights_g": {"枚": 150},
+    "note": "MEXT 生揚げ(厚揚げ)"
+  },
+  "トマト": {
+    "per_100g": {"kcal": 20, "protein": 0.7, "fat": 0.1, "carbs": 4.7, "vitamin_c": 15, "vitamin_e": 0.9, "calcium": 7, "iron": 0.2},
+    "price_per_100g_yen": 55,
+    "unit_weights_g": {"個": 150},
+    "note": "MEXT トマト/果実/生"
+  },
+  "白菜": {
+    "per_100g": {"kcal": 13, "protein": 0.8, "fat": 0.1, "carbs": 3.2, "vitamin_c": 19, "vitamin_e": 0.2, "calcium": 43, "iron": 0.3},
+    "price_per_100g_yen": 30,
+    "unit_weights_g": {"枚": 100},
+    "note": "MEXT はくさい/結球葉/生"
+  },
+  "ポン酢": {
+    "per_100g": {"kcal": 61, "protein": 3.6, "fat": 0.1, "carbs": 8.8, "vitamin_c": 5, "vitamin_e": 0.0, "calcium": 10, "iron": 0.3},
+    "price_per_100g_yen": 75,
+    "unit_weights_g": {},
+    "note": "MEXT ぽん酢しょうゆ"
+  },
+  "きゅうり": {
+    "per_100g": {"kcal": 13, "protein": 1.0, "fat": 0.1, "carbs": 3.0, "vitamin_c": 14, "vitamin_e": 0.3, "calcium": 26, "iron": 0.3},
+    "price_per_100g_yen": 35,
+    "unit_weights_g": {"本": 100},
+    "note": "MEXT きゅうり/果実/生"
+  },
+  "ちくわ": {
+    "per_100g": {"kcal": 119, "protein": 12.2, "fat": 2.0, "carbs": 13.5, "vitamin_c": 0, "vitamin_e": 0.5, "calcium": 25, "iron": 1.0},
+    "price_per_100g_yen": 85,
+    "unit_weights_g": {"本": 30},
+    "note": "MEXT 焼き竹輪"
+  },
+  "酢": {
+    "per_100g": {"kcal": 25, "protein": 0.1, "fat": 0.0, "carbs": 2.4, "vitamin_c": 0, "vitamin_e": 0.0, "calcium": 2, "iron": 0.1},
+    "price_per_100g_yen": 35,
+    "unit_weights_g": {},
+    "note": "MEXT 穀物酢"
+  },
+  "小松菜": {
+    "per_100g": {"kcal": 13, "protein": 1.5, "fat": 0.2, "carbs": 2.4, "vitamin_c": 39, "vitamin_e": 0.9, "calcium": 170, "iron": 2.8},
+    "price_per_100g_yen": 70,
+    "unit_weights_g": {"束": 200},
+    "note": "MEXT こまつな/葉/生"
+  },
+  "めんつゆ": {
+    "per_100g": {"kcal": 44, "protein": 2.4, "fat": 0.0, "carbs": 8.7, "vitamin_c": 0, "vitamin_e": 0.0, "calcium": 5, "iron": 0.3},
+    "price_per_100g_yen": 55,
+    "unit_weights_g": {},
+    "note": "MEXT めんつゆ/ストレートタイプを採用"
+  },
+  "ウインナー": {
+    "per_100g": {"kcal": 319, "protein": 11.5, "fat": 30.6, "carbs": 3.3, "vitamin_c": 25, "vitamin_e": 0.5, "calcium": 6, "iron": 0.5},
+    "price_per_100g_yen": 140,
+    "unit_weights_g": {"本": 20},
+    "note": "MEXT ウインナーソーセージ"
+  },
+  "コンソメ": {
+    "per_100g": {"kcal": 233, "protein": 7.6, "fat": 1.2, "carbs": 43.2, "vitamin_c": 0, "vitamin_e": 0.1, "calcium": 35, "iron": 0.4},
+    "price_per_100g_yen": 420,
+    "unit_weights_g": {"teaspoon_g": 4},
+    "note": "MEXT 固形コンソメ相当(顆粒)。少量小瓶の実勢価格よりper100g換算"
+  },
+  "納豆": {
+    "per_100g": {"kcal": 190, "protein": 16.5, "fat": 10.0, "carbs": 12.1, "vitamin_c": 0, "vitamin_e": 0.5, "calcium": 91, "iron": 3.3},
+    "price_per_100g_yen": 65,
+    "unit_weights_g": {"パック": 45},
+    "note": "MEXT 糸引き納豆"
+  },
+  "ねぎ": {
+    "per_100g": {"kcal": 28, "protein": 1.4, "fat": 0.1, "carbs": 8.3, "vitamin_c": 14, "vitamin_e": 0.2, "calcium": 36, "iron": 0.3},
+    "price_per_100g_yen": 50,
+    "unit_weights_g": {"本": 100},
+    "note": "MEXT 根深ねぎ/葉/軟白/生"
+  },
+  "木綿豆腐": {
+    "per_100g": {"kcal": 73, "protein": 6.7, "fat": 4.5, "carbs": 1.6, "vitamin_c": 0, "vitamin_e": 0.2, "calcium": 86, "iron": 0.9},
+    "price_per_100g_yen": 35,
+    "unit_weights_g": {"丁": 300},
+    "note": "MEXT 木綿豆腐"
+  },
+  "梅干し": {
+    "per_100g": {"kcal": 29, "protein": 0.9, "fat": 0.5, "carbs": 8.6, "vitamin_c": 0, "vitamin_e": 0.5, "calcium": 33, "iron": 1.1},
+    "price_per_100g_yen": 150,
+    "unit_weights_g": {"個": 10},
+    "note": "MEXT 梅干し/塩漬"
+  },
+  "酒": {
+    "per_100g": {"kcal": 109, "protein": 0.4, "fat": 0.0, "carbs": 4.9, "vitamin_c": 0, "vitamin_e": 0.0, "calcium": 3, "iron": 0.1},
+    "price_per_100g_yen": 30,
+    "unit_weights_g": {},
+    "note": "MEXT 清酒/普通酒(料理酒として使用)"
+  },
+  "大葉": {
+    "per_100g": {"kcal": 32, "protein": 3.9, "fat": 0.1, "carbs": 7.5, "vitamin_c": 26, "vitamin_e": 3.5, "calcium": 230, "iron": 1.7},
+    "price_per_100g_yen": 200,
+    "unit_weights_g": {"枚": 1},
+    "note": "MEXT しそ/葉/生。1枚は約1gとして推定"
+  },
+  "えのき": {
+    "per_100g": {"kcal": 34, "protein": 2.7, "fat": 0.2, "carbs": 7.6, "vitamin_c": 0, "vitamin_e": 0.0, "calcium": 0, "iron": 1.1},
+    "price_per_100g_yen": 55,
+    "unit_weights_g": {"袋": 100},
+    "note": "MEXT えのきたけ/生"
+  },
+  "豆乳": {
+    "per_100g": {"kcal": 44, "protein": 3.6, "fat": 2.0, "carbs": 2.9, "vitamin_c": 0, "vitamin_e": 0.1, "calcium": 15, "iron": 1.2},
+    "price_per_100g_yen": 22,
+    "unit_weights_g": {},
+    "note": "MEXT 豆乳/無調整豆乳"
+  },
+  "鶏ひき肉": {
+    "per_100g": {"kcal": 171, "protein": 17.5, "fat": 12.0, "carbs": 0.0, "vitamin_c": 1, "vitamin_e": 0.2, "calcium": 8, "iron": 0.8},
+    "price_per_100g_yen": 110,
+    "unit_weights_g": {},
+    "note": "MEXT にわとり/ひき肉/生"
+  },
+  "片栗粉": {
+    "per_100g": {"kcal": 338, "protein": 0.1, "fat": 0.1, "carbs": 81.6, "vitamin_c": 0, "vitamin_e": 0.0, "calcium": 10, "iron": 0.6},
+    "price_per_100g_yen": 70,
+    "unit_weights_g": {"tablespoon_g": 9, "teaspoon_g": 3},
+    "note": "MEXT じゃがいもでん粉。粉末のためさじの重量は液体より軽い"
+  },
+  "オイスターソース": {
+    "per_100g": {"kcal": 107, "protein": 4.6, "fat": 0.3, "carbs": 18.3, "vitamin_c": 0, "vitamin_e": 0.1, "calcium": 23, "iron": 3.2},
+    "price_per_100g_yen": 110,
+    "unit_weights_g": {},
+    "note": "MEXT 調味料類/オイスターソース"
+  },
+  "冷凍うどん": {
+    "per_100g": {"kcal": 105, "protein": 2.6, "fat": 0.4, "carbs": 21.6, "vitamin_c": 0, "vitamin_e": 0.0, "calcium": 6, "iron": 0.2},
+    "price_per_100g_yen": 35,
+    "unit_weights_g": {"玉": 200},
+    "note": "MEXT うどん/ゆで に準拠(冷凍うどんはゆでうどんと同等組成)"
+  },
+  "パスタ": {
+    "per_100g": {"kcal": 347, "protein": 12.9, "fat": 1.8, "carbs": 73.1, "vitamin_c": 0, "vitamin_e": 0.3, "calcium": 18, "iron": 1.4},
+    "price_per_100g_yen": 35,
+    "unit_weights_g": {},
+    "note": "MEXT マカロニ・スパゲッティ/乾。レシピの100gは乾燥重量として扱う"
+  },
+  "鮭": {
+    "per_100g": {"kcal": 124, "protein": 22.3, "fat": 4.1, "carbs": 0.1, "vitamin_c": 1, "vitamin_e": 1.2, "calcium": 14, "iron": 0.5},
+    "price_per_100g_yen": 200,
+    "unit_weights_g": {"切れ": 80},
+    "note": "MEXT しろさけ/生"
+  },
+  "ブロッコリー": {
+    "per_100g": {"kcal": 37, "protein": 5.4, "fat": 0.6, "carbs": 6.6, "vitamin_c": 140, "vitamin_e": 2.4, "calcium": 50, "iron": 1.3},
+    "price_per_100g_yen": 90,
+    "unit_weights_g": {"株": 250},
+    "note": "MEXT ブロッコリー/花序/生"
+  },
+  "えび": {
+    "per_100g": {"kcal": 90, "protein": 21.7, "fat": 0.3, "carbs": 0.3, "vitamin_c": 0, "vitamin_e": 1.7, "calcium": 41, "iron": 0.7},
+    "price_per_100g_yen": 280,
+    "unit_weights_g": {"尾": 15},
+    "note": "MEXT くるまえび/養殖/生 に近似"
+  },
+  "アスパラ": {
+    "per_100g": {"kcal": 22, "protein": 2.6, "fat": 0.2, "carbs": 3.9, "vitamin_c": 15, "vitamin_e": 1.5, "calcium": 19, "iron": 0.7},
+    "price_per_100g_yen": 130,
+    "unit_weights_g": {"本": 20},
+    "note": "MEXT アスパラガス/若茎/生"
+  },
+  "豚ロース肉": {
+    "per_100g": {"kcal": 248, "protein": 19.3, "fat": 19.2, "carbs": 0.2, "vitamin_c": 1, "vitamin_e": 0.3, "calcium": 4, "iron": 0.3},
+    "price_per_100g_yen": 148,
+    "unit_weights_g": {},
+    "note": "MEXT 豚/ロース/脂身つき/生"
+  },
+  "生姜": {
+    "per_100g": {"kcal": 28, "protein": 0.9, "fat": 0.3, "carbs": 6.6, "vitamin_c": 2, "vitamin_e": 0.1, "calcium": 12, "iron": 0.5},
+    "price_per_100g_yen": 150,
+    "unit_weights_g": {},
+    "note": "MEXT しょうが/根茎/生"
+  },
+  "牛こま肉": {
+    "per_100g": {"kcal": 220, "protein": 19.0, "fat": 15.5, "carbs": 0.5, "vitamin_c": 1, "vitamin_e": 0.4, "calcium": 4, "iron": 1.0},
+    "price_per_100g_yen": 280,
+    "unit_weights_g": {},
+    "note": "MEXT 牛/かた・もも/赤肉主体の切り落とし相当を平均近似"
+  },
+  "かぼちゃ": {
+    "per_100g": {"kcal": 78, "protein": 1.9, "fat": 0.3, "carbs": 20.6, "vitamin_c": 43, "vitamin_e": 4.9, "calcium": 15, "iron": 0.5},
+    "price_per_100g_yen": 55,
+    "unit_weights_g": {"個": 1600},
+    "note": "MEXT 西洋かぼちゃ/果実/生"
+  },
+  "れんこん": {
+    "per_100g": {"kcal": 66, "protein": 1.9, "fat": 0.1, "carbs": 15.5, "vitamin_c": 48, "vitamin_e": 0.6, "calcium": 20, "iron": 0.5},
+    "price_per_100g_yen": 90,
+    "unit_weights_g": {"節": 200},
+    "note": "MEXT れんこん/根茎/生"
+  },
+  "オクラ": {
+    "per_100g": {"kcal": 26, "protein": 2.1, "fat": 0.2, "carbs": 6.6, "vitamin_c": 11, "vitamin_e": 1.2, "calcium": 92, "iron": 0.5},
+    "price_per_100g_yen": 90,
+    "unit_weights_g": {"本": 10},
+    "note": "MEXT おくら/果実/生"
+  },
+  "長芋": {
+    "per_100g": {"kcal": 64, "protein": 2.2, "fat": 0.3, "carbs": 13.9, "vitamin_c": 6, "vitamin_e": 0.2, "calcium": 17, "iron": 0.4},
+    "price_per_100g_yen": 60,
+    "unit_weights_g": {"cm": 60},
+    "note": "MEXT ながいも/塊根/生。1cmあたり重量は直径平均から推定"
+  },
+  "ズッキーニ": {
+    "per_100g": {"kcal": 14, "protein": 1.3, "fat": 0.1, "carbs": 2.8, "vitamin_c": 20, "vitamin_e": 0.4, "calcium": 24, "iron": 0.5},
+    "price_per_100g_yen": 65,
+    "unit_weights_g": {"本": 200},
+    "note": "MEXT ズッキーニ/果実/生"
+  },
+  "ベーコン": {
+    "per_100g": {"kcal": 400, "protein": 12.9, "fat": 39.1, "carbs": 0.3, "vitamin_c": 35, "vitamin_e": 0.5, "calcium": 6, "iron": 0.6},
+    "price_per_100g_yen": 200,
+    "unit_weights_g": {"枚": 20},
+    "note": "MEXT ベーコン/ロースベーコン"
+  },
+  "オリーブオイル": {
+    "per_100g": {"kcal": 921, "protein": 0.0, "fat": 100.0, "carbs": 0.0, "vitamin_c": 0, "vitamin_e": 7.4, "calcium": 0, "iron": 0.4},
+    "price_per_100g_yen": 150,
+    "unit_weights_g": {},
+    "note": "MEXT オリーブ油"
+  },
+  "塩こしょう": {
+    "per_100g": {"kcal": 181, "protein": 5.5, "fat": 3.0, "carbs": 33.3, "vitamin_c": 0, "vitamin_e": 0.3, "calcium": 216, "iron": 10.0},
+    "price_per_100g_yen": 300,
+    "unit_weights_g": {},
+    "note": "塩とこしょう(MEXT こしょう/黒/粉)を1:1で按分した目安値。少量使用のため影響は小さい"
+  },
+  "パプリカ": {
+    "per_100g": {"kcal": 28, "protein": 1.0, "fat": 0.2, "carbs": 7.2, "vitamin_c": 170, "vitamin_e": 4.3, "calcium": 7, "iron": 0.4},
+    "price_per_100g_yen": 110,
+    "unit_weights_g": {"個": 150},
+    "note": "MEXT 赤ピーマン/果実/生"
+  },
+  "いんげん": {
+    "per_100g": {"kcal": 23, "protein": 1.8, "fat": 0.1, "carbs": 5.1, "vitamin_c": 8, "vitamin_e": 0.2, "calcium": 48, "iron": 0.7},
+    "price_per_100g_yen": 100,
+    "unit_weights_g": {"本": 10},
+    "note": "MEXT さやいんげん/若ざや/生"
+  },
+  "すりごま": {
+    "per_100g": {"kcal": 605, "protein": 20.3, "fat": 53.0, "carbs": 18.5, "vitamin_c": 0, "vitamin_e": 22.6, "calcium": 1200, "iron": 9.6},
+    "price_per_100g_yen": 400,
+    "unit_weights_g": {"tablespoon_g": 9, "teaspoon_g": 3},
+    "note": "MEXT ごま/いり。粉末状のためさじの重量は液体より軽い"
+  },
+  "しらす": {
+    "per_100g": {"kcal": 113, "protein": 19.8, "fat": 2.1, "carbs": 0.1, "vitamin_c": 0, "vitamin_e": 1.1, "calcium": 210, "iron": 0.6},
+    "price_per_100g_yen": 350,
+    "unit_weights_g": {},
+    "note": "MEXT しらす干し/微乾燥品"
+  },
+  "キムチ": {
+    "per_100g": {"kcal": 46, "protein": 2.3, "fat": 0.5, "carbs": 7.9, "vitamin_c": 13, "vitamin_e": 0.8, "calcium": 25, "iron": 0.5},
+    "price_per_100g_yen": 90,
+    "unit_weights_g": {},
+    "note": "MEXT はくさい漬/キムチ"
+  },
+  "もずく酢": {
+    "per_100g": {"kcal": 21, "protein": 0.2, "fat": 0.1, "carbs": 3.4, "vitamin_c": 0, "vitamin_e": 0.0, "calcium": 22, "iron": 0.1},
+    "price_per_100g_yen": 90,
+    "unit_weights_g": {"パック": 70},
+    "note": "MEXT もずく/塩蔵/塩抜きに合わせ酢分の糖質を加味した目安値"
+  },
+  "牛乳": {
+    "per_100g": {"kcal": 61, "protein": 3.3, "fat": 3.8, "carbs": 4.8, "vitamin_c": 1, "vitamin_e": 0.1, "calcium": 110, "iron": 0.02},
+    "price_per_100g_yen": 22,
+    "unit_weights_g": {},
+    "note": "MEXT 普通牛乳"
+  },
+  "油揚げ": {
+    "per_100g": {"kcal": 377, "protein": 23.4, "fat": 34.4, "carbs": 0.4, "vitamin_c": 0, "vitamin_e": 1.3, "calcium": 310, "iron": 3.2},
+    "price_per_100g_yen": 100,
+    "unit_weights_g": {"枚": 30},
+    "note": "MEXT 油揚げ/生"
+  },
+  "レタス": {
+    "per_100g": {"kcal": 11, "protein": 0.6, "fat": 0.1, "carbs": 2.8, "vitamin_c": 5, "vitamin_e": 0.3, "calcium": 19, "iron": 0.3},
+    "price_per_100g_yen": 40,
+    "unit_weights_g": {"枚": 30},
+    "note": "MEXT レタス/結球葉/生"
+  },
+  "さつまいも": {
+    "per_100g": {"kcal": 126, "protein": 1.0, "fat": 0.1, "carbs": 31.9, "vitamin_c": 29, "vitamin_e": 1.0, "calcium": 36, "iron": 0.5},
+    "price_per_100g_yen": 40,
+    "unit_weights_g": {"本": 250},
+    "note": "MEXT さつまいも/塊根/皮なし/生"
+  },
+  "さば缶（水煮）": {
+    "per_100g": {"kcal": 190, "protein": 20.9, "fat": 10.7, "carbs": 0.2, "vitamin_c": 0, "vitamin_e": 3.3, "calcium": 260, "iron": 1.6},
+    "price_per_100g_yen": 120,
+    "unit_weights_g": {"缶": 190},
+    "note": "MEXT さば類/缶詰/水煮"
+  },
+  "焼きそば麺": {
+    "per_100g": {"kcal": 149, "protein": 4.9, "fat": 1.2, "carbs": 27.7, "vitamin_c": 0, "vitamin_e": 0.2, "calcium": 8, "iron": 0.4},
+    "price_per_100g_yen": 35,
+    "unit_weights_g": {"玉": 150},
+    "note": "MEXT 中華めん/蒸し"
+  },
+  "そば": {
+    "per_100g": {"kcal": 130, "protein": 4.8, "fat": 1.0, "carbs": 26.0, "vitamin_c": 0, "vitamin_e": 0.2, "calcium": 9, "iron": 0.8},
+    "price_per_100g_yen": 55,
+    "unit_weights_g": {"人前": 200},
+    "note": "MEXT そば/ゆで"
+  },
+  "食パン": {
+    "per_100g": {"kcal": 248, "protein": 8.9, "fat": 4.1, "carbs": 46.4, "vitamin_c": 0, "vitamin_e": 0.4, "calcium": 29, "iron": 0.5},
+    "price_per_100g_yen": 45,
+    "unit_weights_g": {"枚": 60},
+    "note": "MEXT 食パン。1枚は6枚切り相当(約60g)"
+  },
+  "チーズ": {
+    "per_100g": {"kcal": 339, "protein": 22.7, "fat": 26.0, "carbs": 1.3, "vitamin_c": 0, "vitamin_e": 1.1, "calcium": 630, "iron": 0.3},
+    "price_per_100g_yen": 180,
+    "unit_weights_g": {"枚": 18},
+    "note": "MEXT プロセスチーズ。1枚はスライスチーズ相当(約18g)"
+  },
+  "マヨネーズ": {
+    "per_100g": {"kcal": 703, "protein": 1.5, "fat": 75.3, "carbs": 2.1, "vitamin_c": 0, "vitamin_e": 29.2, "calcium": 8, "iron": 0.3},
+    "price_per_100g_yen": 65,
+    "unit_weights_g": {"tablespoon_g": 12, "teaspoon_g": 4},
+    "note": "MEXT マヨネーズ/全卵型。油主体のため大さじは15gより軽い(約12g)"
+  },
+  "鶏手羽元": {
+    "per_100g": {"kcal": 189, "protein": 17.8, "fat": 12.8, "carbs": 0.0, "vitamin_c": 2, "vitamin_e": 0.7, "calcium": 14, "iron": 0.6},
+    "price_per_100g_yen": 90,
+    "unit_weights_g": {"本": 60},
+    "note": "MEXT 若鶏肉/手羽/皮つき/生。骨付きのため価格は割安"
+  },
+  "あさり(水煮缶)": {
+    "per_100g": {"kcal": 114, "protein": 20.3, "fat": 2.2, "carbs": 1.9, "vitamin_c": 0, "vitamin_e": 1.6, "calcium": 66, "iron": 30.0},
+    "price_per_100g_yen": 320,
+    "unit_weights_g": {"缶": 130},
+    "note": "MEXT あさり/缶詰/水煮。缶詰は生より鉄分が凝縮され非常に高い"
+  },
+  "たら": {
+    "per_100g": {"kcal": 72, "protein": 17.6, "fat": 0.2, "carbs": 0.1, "vitamin_c": 0, "vitamin_e": 0.8, "calcium": 32, "iron": 0.2},
+    "price_per_100g_yen": 150,
+    "unit_weights_g": {"切れ": 80},
+    "note": "MEXT まだら/生"
+  },
+  "いか(冷凍)": {
+    "per_100g": {"kcal": 76, "protein": 17.9, "fat": 0.8, "carbs": 0.2, "vitamin_c": 1, "vitamin_e": 1.9, "calcium": 11, "iron": 0.1},
+    "price_per_100g_yen": 180,
+    "unit_weights_g": {"杯分": 250},
+    "note": "MEXT するめいか/生に準拠(冷凍でも組成はほぼ同じ)"
+  },
+  "高野豆腐": {
+    "per_100g": {"kcal": 496, "protein": 50.5, "fat": 34.1, "carbs": 4.2, "vitamin_c": 0, "vitamin_e": 1.0, "calcium": 630, "iron": 6.8},
+    "price_per_100g_yen": 250,
+    "unit_weights_g": {"個": 17},
+    "note": "MEXT 凍り豆腐/乾"
+  },
+  "がんもどき": {
+    "per_100g": {"kcal": 223, "protein": 15.3, "fat": 17.8, "carbs": 1.6, "vitamin_c": 0, "vitamin_e": 1.1, "calcium": 270, "iron": 3.6},
+    "price_per_100g_yen": 140,
+    "unit_weights_g": {"個": 60},
+    "note": "MEXT がんもどき"
+  },
+  "かぶ": {
+    "per_100g": {"kcal": 18, "protein": 0.6, "fat": 0.1, "carbs": 4.0, "vitamin_c": 19, "vitamin_e": 0.0, "calcium": 24, "iron": 0.3},
+    "price_per_100g_yen": 35,
+    "unit_weights_g": {"個": 80},
+    "note": "MEXT かぶ/根/皮なし/生"
+  },
+  "ごぼう": {
+    "per_100g": {"kcal": 58, "protein": 1.8, "fat": 0.1, "carbs": 15.4, "vitamin_c": 3, "vitamin_e": 0.6, "calcium": 46, "iron": 0.7},
+    "price_per_100g_yen": 65,
+    "unit_weights_g": {"本": 150},
+    "note": "MEXT ごぼう/根/生"
+  },
+  "チンゲン菜": {
+    "per_100g": {"kcal": 9, "protein": 0.6, "fat": 0.1, "carbs": 2.0, "vitamin_c": 24, "vitamin_e": 0.7, "calcium": 100, "iron": 1.1},
+    "price_per_100g_yen": 60,
+    "unit_weights_g": {"株": 100},
+    "note": "MEXT チンゲンサイ/葉/生"
+  },
+  "水菜": {
+    "per_100g": {"kcal": 23, "protein": 2.2, "fat": 0.1, "carbs": 4.8, "vitamin_c": 55, "vitamin_e": 1.8, "calcium": 210, "iron": 2.1},
+    "price_per_100g_yen": 70,
+    "unit_weights_g": {"束": 200},
+    "note": "MEXT みずな/葉/生"
+  },
+  "里芋": {
+    "per_100g": {"kcal": 58, "protein": 1.5, "fat": 0.1, "carbs": 13.1, "vitamin_c": 6, "vitamin_e": 0.6, "calcium": 10, "iron": 0.5},
+    "price_per_100g_yen": 65,
+    "unit_weights_g": {"個": 50},
+    "note": "MEXT さといも/球茎/生"
+  },
+  "枝豆(冷凍)": {
+    "per_100g": {"kcal": 130, "protein": 11.5, "fat": 6.6, "carbs": 11.5, "vitamin_c": 15, "vitamin_e": 0.8, "calcium": 58, "iron": 2.5},
+    "price_per_100g_yen": 90,
+    "unit_weights_g": {},
+    "note": "MEXT えだまめ/冷凍"
+  },
+  "コーン缶": {
+    "per_100g": {"kcal": 82, "protein": 2.2, "fat": 0.5, "carbs": 18.6, "vitamin_c": 2, "vitamin_e": 0.1, "calcium": 2, "iron": 0.4},
+    "price_per_100g_yen": 60,
+    "unit_weights_g": {},
+    "note": "MEXT スイートコーン/缶詰/ホールカーネルスタイル"
+  },
+  "はんぺん": {
+    "per_100g": {"kcal": 94, "protein": 9.9, "fat": 1.0, "carbs": 11.4, "vitamin_c": 0, "vitamin_e": 0.1, "calcium": 15, "iron": 0.5},
+    "price_per_100g_yen": 90,
+    "unit_weights_g": {"枚": 120},
+    "note": "MEXT はんぺん"
+  },
+  "青のり": {
+    "per_100g": {"kcal": 249, "protein": 29.4, "fat": 5.2, "carbs": 41.0, "vitamin_c": 62, "vitamin_e": 2.5, "calcium": 750, "iron": 77.0},
+    "price_per_100g_yen": 2500,
+    "unit_weights_g": {},
+    "note": "MEXT あおのり/素干し。少量使用のため単価は高いが影響は極小"
+  },
+  "かつお節": {
+    "per_100g": {"kcal": 356, "protein": 77.1, "fat": 3.0, "carbs": 0.8, "vitamin_c": 0, "vitamin_e": 0.5, "calcium": 28, "iron": 5.5},
+    "price_per_100g_yen": 1100,
+    "unit_weights_g": {"パック": 3},
+    "note": "MEXT かつお節。小分けパックの実勢価格よりper100g換算"
+  },
+  "塩昆布": {
+    "per_100g": {"kcal": 146, "protein": 6.8, "fat": 0.4, "carbs": 23.9, "vitamin_c": 0, "vitamin_e": 0.7, "calcium": 240, "iron": 4.0},
+    "price_per_100g_yen": 600,
+    "unit_weights_g": {"tablespoon_g": 8},
+    "note": "MEXT こんぶ/つくだ煮(塩昆布)に近似。繊維状で嵩が軽いため大さじは液体より軽い"
+  },
+  "春雨": {
+    "per_100g": {"kcal": 344, "protein": 0.2, "fat": 0.4, "carbs": 84.6, "vitamin_c": 0, "vitamin_e": 0.0, "calcium": 20, "iron": 0.5},
+    "price_per_100g_yen": 220,
+    "unit_weights_g": {},
+    "note": "MEXT はるさめ/緑豆はるさめ/乾"
+  },
+  "いわし缶": {
+    "per_100g": {"kcal": 168, "protein": 20.6, "fat": 9.0, "carbs": 0.1, "vitamin_c": 0, "vitamin_e": 3.0, "calcium": 320, "iron": 2.6},
+    "price_per_100g_yen": 130,
+    "unit_weights_g": {"缶": 150},
+    "note": "MEXT いわし/缶詰/水煮"
+  },
+  "そうめん": {
+    "per_100g": {"kcal": 356, "protein": 9.5, "fat": 1.1, "carbs": 72.7, "vitamin_c": 0, "vitamin_e": 0.3, "calcium": 17, "iron": 0.8},
+    "price_per_100g_yen": 45,
+    "unit_weights_g": {"束": 50},
+    "note": "MEXT そうめん・ひやむぎ/乾。1束は乾燥重量約50g"
+  },
+  "カレールー": {
+    "per_100g": {"kcal": 474, "protein": 6.5, "fat": 34.1, "carbs": 38.4, "vitamin_c": 0, "vitamin_e": 3.6, "calcium": 45, "iron": 1.5},
+    "price_per_100g_yen": 250,
+    "unit_weights_g": {"かけ": 20},
+    "note": "MEXT ルウ類/カレールウ"
+  },
+  "餅": {
+    "per_100g": {"kcal": 223, "protein": 4.0, "fat": 0.6, "carbs": 50.3, "vitamin_c": 0, "vitamin_e": 0.0, "calcium": 3, "iron": 0.5},
+    "price_per_100g_yen": 70,
+    "unit_weights_g": {"個": 50},
+    "note": "MEXT もち"
+  }
+}

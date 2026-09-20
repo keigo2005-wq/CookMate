@@ -1,15 +1,15 @@
 """冷蔵庫の食材条件から、合うレシピを探す検索ロジック。"""
 
 import json
+import re
 from pathlib import Path
 
 from custom_recipes import load_custom_recipes
 
 RECIPES_PATH = Path(__file__).parent / "data" / "recipes.json"
-PRICES_PATH = Path(__file__).parent / "data" / "ingredient_prices.json"
 ALIASES_PATH = Path(__file__).parent / "data" / "ingredient_aliases.json"
 CATEGORIES_PATH = Path(__file__).parent / "data" / "ingredient_categories.json"
-NUTRITION_PATH = Path(__file__).parent / "data" / "ingredient_nutrition.json"
+REFERENCE_PATH = Path(__file__).parent / "data" / "ingredient_reference.json"
 
 # カテゴリの表示順（食材を選びやすい、大まかな並び）
 CATEGORY_ORDER = [
@@ -17,7 +17,10 @@ CATEGORY_ORDER = [
     "野菜", "きのこ類", "ご飯・麺・パン", "調味料",
 ]
 
-DEFAULT_INGREDIENT_PRICE = 100  # 価格が分からない食材の、仮の目安価格（円）
+DEFAULT_PRICE_PER_100G = 150  # 価格データが無い食材の、仮の目安価格（円／100g）
+DEFAULT_UNKNOWN_AMOUNT_G = 5  # 分量の表記が読み取れない場合の、仮の重さ（g）
+DEFAULT_TABLESPOON_G = 15  # 大さじ1の目安（g）
+DEFAULT_TEASPOON_G = 5  # 小さじ1の目安（g）
 
 
 def load_recipes(user_id: str) -> list[dict]:
@@ -27,9 +30,13 @@ def load_recipes(user_id: str) -> list[dict]:
     return recipes + load_custom_recipes(user_id)
 
 
-def load_ingredient_prices() -> dict[str, int]:
-    """data/ingredient_prices.json を読み込んで、食材ごとの目安価格を返す。"""
-    with open(PRICES_PATH, encoding="utf-8") as f:
+def load_ingredient_reference() -> dict[str, dict]:
+    """data/ingredient_reference.json を読み込む。
+
+    食材ごとに、100gあたりの栄養価・価格・「1個」「大さじ1」のような
+    分量表記をグラム数に変換するための目安をまとめたデータ。
+    """
+    with open(REFERENCE_PATH, encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -70,33 +77,116 @@ def load_categorized_ingredient_options() -> list[tuple[str, list[str]]]:
     return [(name, sorted(categories[name])) for name in CATEGORY_ORDER if name in categories]
 
 
-def estimate_shopping_cost(missing_ingredients: list[str]) -> int:
-    """足りない食材を買うのに、だいたいいくらかかるかを合計する（円）。"""
-    prices = load_ingredient_prices()
-    return sum(prices.get(name, DEFAULT_INGREDIENT_PRICE) for name in missing_ingredients)
+_FRACTIONS = {"1/2": 0.5, "1/3": 1 / 3, "1/4": 0.25, "1/8": 0.125}
 
 
-def load_ingredient_nutrition() -> dict[str, dict[str, float]]:
-    """data/ingredient_nutrition.json を読み込んで、食材ごとの栄養価の目安を返す。"""
-    with open(NUTRITION_PATH, encoding="utf-8") as f:
-        return json.load(f)
+def _parse_number(text: str) -> float:
+    """"1/2" のような分数表記にも対応した数値変換。"""
+    if "/" in text:
+        num, den = text.split("/")
+        return float(num) / float(den)
+    return float(text)
+
+
+def _parse_quantity_prefix(text: str) -> tuple[float, str]:
+    """文字列の先頭にある数量（分数・整数）を取り出す。
+
+    戻り値: (数量, 残りの文字列)。数量が無ければ (1.0, 元の文字列)。
+    """
+    for fraction_text, value in _FRACTIONS.items():
+        if text.startswith(fraction_text):
+            return value, text[len(fraction_text):]
+    match = re.match(r"^(\d+(?:\.\d+)?)", text)
+    if match:
+        return float(match.group(1)), text[match.end():]
+    return 1.0, text
+
+
+def amount_to_grams(ingredient_name: str, amount_text: str, reference: dict) -> float:
+    """「200g」「大さじ1」「1/4個」のような分量の表記を、おおよそのグラム数に変換する。
+
+    食材ごとに「1個」「1本」などが何gに相当するかは、ingredient_reference.json の
+    unit_weights_g を参照する。大さじ・小さじ・少々などは、食材ごとの指定が
+    無ければ共通の目安値を使う。
+    """
+    text = amount_text.strip()
+    unit_weights = reference.get(ingredient_name, {}).get("unit_weights_g", {})
+
+    # 「小1パック」のような、食材固有の特殊な表記がそのまま登録されている場合
+    if text in unit_weights:
+        return unit_weights[text]
+
+    text = text.replace("あれば", "").replace("約", "").strip()
+    if text in unit_weights:
+        return unit_weights[text]
+
+    if text in ("少々", "ひとつまみ"):
+        return 1.0
+    if text in ("適量", ""):
+        return 5.0
+
+    match = re.match(r"^(\d+(?:\.\d+)?)(g|ml)$", text)
+    if match:
+        return float(match.group(1))
+
+    match = re.match(r"^大さじ(\d+(?:/\d+)?(?:\.\d+)?)$", text)
+    if match:
+        return _parse_number(match.group(1)) * unit_weights.get("tablespoon_g", DEFAULT_TABLESPOON_G)
+
+    match = re.match(r"^小さじ(\d+(?:/\d+)?(?:\.\d+)?)$", text)
+    if match:
+        return _parse_number(match.group(1)) * unit_weights.get("teaspoon_g", DEFAULT_TEASPOON_G)
+
+    match = re.match(r"^(\d+(?:\.\d+)?)cm$", text)
+    if match:
+        return float(match.group(1)) * unit_weights.get("cm", 10)
+
+    quantity, rest = _parse_quantity_prefix(text)
+    if rest in unit_weights:
+        return quantity * unit_weights[rest]
+
+    return DEFAULT_UNKNOWN_AMOUNT_G
+
+
+def estimate_shopping_cost(ingredients: list[dict]) -> int:
+    """材料（名前と分量）のリストから、買うのにだいたいいくらかかるかを合計する（円）。
+
+    食材ごとの100gあたり価格 × 実際に使う分量(g) で計算するため、
+    同じ食材でもレシピによって必要な量が違えば、金額も変わる。
+    """
+    reference = load_ingredient_reference()
+    total = 0.0
+    for ingredient in ingredients:
+        name = ingredient["name"]
+        amount_text = ingredient.get("amount", "")
+        grams = amount_to_grams(name, amount_text, reference) if amount_text else 100.0
+        price_per_100g = reference.get(name, {}).get("price_per_100g_yen", DEFAULT_PRICE_PER_100G)
+        total += price_per_100g * grams / 100
+    return round(total)
+
+
+NUTRITION_KEYS = ["kcal", "protein", "fat", "carbs", "vitamin_c", "vitamin_e", "calcium", "iron"]
 
 
 def calculate_nutrition(recipe: dict) -> dict[str, float]:
-    """レシピ全体のカロリーとPFC（たんぱく質・脂質・炭水化物）を合計する。
+    """レシピ全体のカロリー・PFC・主なビタミン/ミネラルを合計する。
 
-    食材ごとの目安値を足し合わせるだけの、簡易的な計算方法。
-    栄養成分表のような厳密な分析値ではなく、「だいたいの目安」として扱う。
+    食材ごとの100gあたりの栄養価に、実際にレシピで使う分量(g)を掛けて
+    合計する。栄養成分表のような厳密な分析値ではなく、「だいたいの目安」
+    として扱う。
     """
-    nutrition_table = load_ingredient_nutrition()
+    reference = load_ingredient_reference()
 
-    totals = {"kcal": 0.0, "protein": 0.0, "fat": 0.0, "carbs": 0.0}
+    totals = {key: 0.0 for key in NUTRITION_KEYS}
     for ingredient in recipe["ingredients"]:
-        values = nutrition_table.get(ingredient["name"])
-        if values is None:
+        name = ingredient["name"]
+        entry = reference.get(name)
+        if entry is None:
             continue
-        for key in totals:
-            totals[key] += values[key]
+        grams = amount_to_grams(name, ingredient["amount"], reference)
+        per_100g = entry["per_100g"]
+        for key in NUTRITION_KEYS:
+            totals[key] += per_100g.get(key, 0.0) * grams / 100
 
     # PFCバランス：3大栄養素のうち、それぞれ何%のカロリーを占めるか
     # (たんぱく質・炭水化物は1gあたり4kcal、脂質は1gあたり9kcal)
@@ -113,6 +203,31 @@ def calculate_nutrition(recipe: dict) -> dict[str, float]:
         totals["protein_ratio"] = totals["fat_ratio"] = totals["carbs_ratio"] = 0
 
     return totals
+
+
+# 厚生労働省「日本人の食事摂取基準」で、脂質由来エネルギー比率の目標量は
+# 20〜30%とされている。この上限に収まる料理を「ダイエット向き」の目安とする。
+DIET_FAT_RATIO_MAX = 30
+DIET_KCAL_MAX = 450  # 1品あたりのカロリーが控えめな目安（kcal）
+
+# ビタミンC・ビタミンEを、他のレシピと比べて特に多く含む料理を
+# 「美容」に役立つ料理とみなす（全レシピの上位25%程度が目安に収まるよう、
+# 実際の分布を確認したうえで基準値を決めた）
+BEAUTY_VITAMIN_C_MIN = 40
+BEAUTY_VITAMIN_E_MIN = 2.2
+
+
+def classify_nutrition_tags(nutrition: dict[str, float]) -> list[str]:
+    """計算した栄養価から、「ダイエット向き」「美容」のタグを自動で判定する。
+
+    数値による判定なので、実際の栄養価が変わればタグも自動的に更新される。
+    """
+    tags = []
+    if nutrition["kcal"] <= DIET_KCAL_MAX and nutrition["fat_ratio"] <= DIET_FAT_RATIO_MAX:
+        tags.append("ダイエット向き")
+    if nutrition.get("vitamin_c", 0) >= BEAUTY_VITAMIN_C_MIN or nutrition.get("vitamin_e", 0) >= BEAUTY_VITAMIN_E_MIN:
+        tags.append("美容")
+    return tags
 
 
 ALWAYS_AVAILABLE = {"水"}  # 誰の家にもあるとみなし、「追加で必要な食材」に含めない
