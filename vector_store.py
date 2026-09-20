@@ -14,6 +14,7 @@ from pathlib import Path
 os.environ.setdefault("ANONYMIZED_TELEMETRY", "False")  # 利用状況の外部送信をしない
 
 import chromadb
+import streamlit as st
 from chromadb.config import Settings
 
 from embeddings import embed_query, embed_texts, recipe_to_text
@@ -22,24 +23,31 @@ CHROMA_PATH = Path(__file__).parent / "data" / "chroma_db"
 COLLECTION_NAME = "recipes"
 RECIPES_PATH = Path(__file__).parent / "data" / "recipes.json"
 
-_client = None
-_collection = None
+
+@st.cache_resource
+def _get_client():
+    """Chromaへの接続を作る。
+
+    Streamlitは利用者ごとに別スレッドでアプリを動かすため、単純な
+    グローバル変数でキャッシュすると、複数の利用者が同時にアクセスした
+    ときに接続の作成が重なってしまうことがある。st.cache_resourceを使うと、
+    Streamlit自身が「全体で1つだけ作る」ことを保証してくれる。
+    """
+    CHROMA_PATH.mkdir(parents=True, exist_ok=True)
+    return chromadb.PersistentClient(
+        path=str(CHROMA_PATH),
+        settings=Settings(anonymized_telemetry=False),
+    )
 
 
 def _get_collection():
     """Chromaのコレクション(表のようなもの)を取得する。無ければ作る。"""
-    global _client, _collection
-    if _collection is None:
-        _client = chromadb.PersistentClient(
-            path=str(CHROMA_PATH),
-            settings=Settings(anonymized_telemetry=False),
-        )
-        # "hnsw:space": "cosine" は、意味の近さを測る方法にコサイン類似度を使う指定
-        _collection = _client.get_or_create_collection(
-            name=COLLECTION_NAME,
-            metadata={"hnsw:space": "cosine"},
-        )
-    return _collection
+    client = _get_client()
+    # "hnsw:space": "cosine" は、意味の近さを測る方法にコサイン類似度を使う指定
+    return client.get_or_create_collection(
+        name=COLLECTION_NAME,
+        metadata={"hnsw:space": "cosine"},
+    )
 
 
 def build_index(recipes: list[dict]) -> None:
