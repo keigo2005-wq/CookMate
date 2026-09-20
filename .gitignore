@@ -10,3 +10,7 @@ venv/
 # ベクトルデータベース（recipes.jsonから自動生成されるため、
 # GitHubには含めない。使う前に `python vector_store.py` で作り直す）
 data/chroma_db/
+
+# 開発中の作業メモ（社内向けの開発ログのため、GitHubには公開しない。
+# 人事の方などが見る「顔」としてはREADME.mdを使う）
+01_アプリ案.md
