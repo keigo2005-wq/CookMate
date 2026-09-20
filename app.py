@@ -600,15 +600,33 @@ with tab_search:
         st.info("食材を選ぶか、食べたい料理を文章で入力すると、レシピが表示されます。")
     else:
         with st.spinner("レシピを検索しています..."):
-            results = search_recipes(
-                user_id=user_id,
-                ingredients=ingredients,
-                max_time_minutes=max_time,
-                tags=selected_tags,
-                category=category_filter,
-                query_text=query_text.strip() or None,
-                top_k=6,
-            )
+            try:
+                results = search_recipes(
+                    user_id=user_id,
+                    ingredients=ingredients,
+                    max_time_minutes=max_time,
+                    tags=selected_tags,
+                    category=category_filter,
+                    query_text=query_text.strip() or None,
+                    top_k=6,
+                )
+            except Exception:
+                # 意味検索(埋め込みモデル)が一時的に使えないことがあるため、
+                # その場合は食材・条件だけで検索し直し、アプリごと止まらないようにする
+                if query_text.strip():
+                    st.warning(
+                        "「こんな料理が食べたい」の検索が一時的に利用できなかったため、"
+                        "食材・条件のみで検索しました。"
+                    )
+                results = search_recipes(
+                    user_id=user_id,
+                    ingredients=ingredients,
+                    max_time_minutes=max_time,
+                    tags=selected_tags,
+                    category=category_filter,
+                    query_text=None,
+                    top_k=6,
+                )
 
         if not results:
             st.warning("条件に合うレシピが見つかりませんでした。食材や条件を変えてみてください。")
