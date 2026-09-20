@@ -18,7 +18,7 @@ from search import (
     search_recipes,
 )
 
-st.set_page_config(page_title="CookMate", page_icon="🍳", layout="centered")
+st.set_page_config(page_title="CookMate", page_icon="assets/icon.png", layout="centered")
 
 TAG_COLORS = {
     "時短": "#FFB84C",
