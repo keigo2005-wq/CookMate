@@ -545,13 +545,16 @@ with tab_search:
 
     def reset_search_filters() -> None:
         """検索条件を、すべて選んでいない状態に戻す。"""
+        # session_stateのキーをpopで消すだけだと、ウィジェット側に選択済みの
+        # 表示が残ってしまうことがある。空の値を明示的に入れ直すことで、
+        # 画面上の選択肢も確実にクリアする。
         for category_name, _ in categorized_options:
-            st.session_state.pop(f"ing_{category_name}", None)
-        st.session_state.pop("other_ingredients_text", None)
-        st.session_state.pop("query_text_area", None)
-        st.session_state.pop("max_time_slider", None)
-        st.session_state.pop("category_select", None)
-        st.session_state.pop("tags_select", None)
+            st.session_state[f"ing_{category_name}"] = []
+        st.session_state["other_ingredients_text"] = ""
+        st.session_state["query_text_area"] = ""
+        st.session_state["max_time_slider"] = 20
+        st.session_state["category_select"] = "すべて"
+        st.session_state["tags_select"] = []
         st.session_state.pop("ai_comment", None)
 
     st.button(":material/restart_alt: 条件をリセット", on_click=reset_search_filters)
@@ -584,8 +587,10 @@ with tab_search:
     )
 
     st.divider()
+    if "max_time_slider" not in st.session_state:
+        st.session_state["max_time_slider"] = 20
     max_time = st.slider(
-        "調理時間の上限（分）", min_value=5, max_value=60, value=20, step=5, key="max_time_slider"
+        "調理時間の上限（分）", min_value=5, max_value=60, step=5, key="max_time_slider"
     )
     selected_category = st.selectbox(
         "カテゴリ", options=["すべて"] + all_categories, key="category_select"
@@ -783,7 +788,7 @@ with tab_planner:
         st.session_state.pop("goal_presets_select", None)
         st.session_state.pop("goal_text_input", None)
 
-    st.button(":material/restart_alt: 献立をすべて未定に戻す", on_click=reset_weekly_plan)
+    st.button(":material/restart_alt: 献立をリセット", on_click=reset_weekly_plan)
 
     plan = load_plan(user_id)
 
