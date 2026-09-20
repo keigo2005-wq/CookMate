@@ -11,12 +11,14 @@ Claude APIには埋め込み機能が無いため、無料で使えるモデル�
 vector_store.py（ベクトルデータベース）が担当する。
 """
 
-import os
+import truststore
 
-# モデルは一度ダウンロードすればパソコンに保存される。2回目以降は
-# 毎回インターネットに更新確認をしに行かせない(この学校のネットワークでは
-# 証明書エラーで失敗するため)。すでにキャッシュ済みのファイルだけを使う。
-os.environ.setdefault("HF_HUB_OFFLINE", "1")
+# モデルのダウンロード時に、ネットワーク環境によっては証明書エラーに
+# なることがある(この学校のネットワークで発生した)。OSが信頼している
+# 証明書をそのまま使うことで、この問題を避ける。Supabaseへの接続でも
+# 同じ仕組みを使っている(auth.py参照)。何度呼び出しても安全な処理なので、
+# ここでも呼び出しておくことで、embeddings.pyだけを使う場合にも対応する。
+truststore.inject_into_ssl()
 
 import numpy as np
 from sentence_transformers import SentenceTransformer
