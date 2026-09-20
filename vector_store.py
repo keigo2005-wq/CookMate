@@ -7,6 +7,7 @@
 Chromaは無料で、パソコンの中だけで動く(サーバーもAPIキーも不要)。
 """
 
+import json
 import os
 from pathlib import Path
 
@@ -19,6 +20,7 @@ from embeddings import embed_query, embed_texts, recipe_to_text
 
 CHROMA_PATH = Path(__file__).parent / "data" / "chroma_db"
 COLLECTION_NAME = "recipes"
+RECIPES_PATH = Path(__file__).parent / "data" / "recipes.json"
 
 _client = None
 _collection = None
@@ -86,6 +88,19 @@ def delete_recipe_from_index(recipe_id: str) -> None:
     collection.delete(ids=[recipe_id])
 
 
+def load_all_recipes_for_index() -> list[dict]:
+    """本体レシピ＋全利用者分のマイレシピを、ベクトルDB作成用に読み込む。
+
+    search.pyを経由すると循環インポートになるため、ここでは
+    直接ファイルとcustom_recipesを読み込む。
+    """
+    from custom_recipes import load_all_custom_recipes
+
+    with open(RECIPES_PATH, encoding="utf-8") as f:
+        base_recipes = json.load(f)
+    return base_recipes + load_all_custom_recipes()
+
+
 def query_similar(query_text: str, top_k: int = 100) -> dict[str, float]:
     """検索文と意味が近いレシピを探し、レシピIDと類似度のペアで返す。
 
@@ -93,7 +108,12 @@ def query_similar(query_text: str, top_k: int = 100) -> dict[str, float]:
     """
     collection = _get_collection()
     if collection.count() == 0:
-        return {}
+        # Streamlit Cloudなど、パソコンを再起動するとベクトルデータベースが
+        # 空になってしまう環境向けに、空だった場合はここで自動的に作り直す
+        build_index(load_all_recipes_for_index())
+        collection = _get_collection()
+        if collection.count() == 0:
+            return {}
 
     query_vector = embed_query(query_text)
     result = collection.query(
@@ -108,14 +128,7 @@ def query_similar(query_text: str, top_k: int = 100) -> dict[str, float]:
 
 
 if __name__ == "__main__":
-    import json
-
-    from custom_recipes import load_all_custom_recipes
-    from search import RECIPES_PATH
-
-    with open(RECIPES_PATH, encoding="utf-8") as f:
-        base_recipes = json.load(f)
-    all_recipes = base_recipes + load_all_custom_recipes()
+    all_recipes = load_all_recipes_for_index()
     print(f"{len(all_recipes)}件のレシピをベクトルデータベースに登録しています...")
     build_index(all_recipes)
     print("登録しました:", CHROMA_PATH)
